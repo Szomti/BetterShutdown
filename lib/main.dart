@@ -15,6 +15,13 @@ class MyApp extends StatelessWidget {
       title: 'BetterShutdown',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,

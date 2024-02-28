@@ -20,6 +20,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final _scrollController = ScrollController();
   final _shell = Shell();
   final _logs = Logs();
+  int? _seconds;
+  DateTime? _shutdownDate;
 
   @override
   Widget build(BuildContext context) {
@@ -105,21 +107,78 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    ElevatedButton(
-                      onPressed: () {
-                        final seconds = int.tryParse(_controller.text);
-                        if (seconds == null) {
-                          _logs.add(
-                            'incorrect input',
-                            controller: _scrollController,
-                          );
-                          setState(() {});
-                          return;
-                        }
-                        _shell.run('shutdown -s -t $seconds');
-                      },
-                      child: const Text('Start'),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              showDatePicker(
+                                context: context,
+                                firstDate: DateTime.now(),
+                                lastDate: DateTime.now()
+                                    .add(const Duration(days: 3630)),
+                              );
+                            },
+                            child: const Text('Select Date'),
+                          ),
+                        ),
+                      ],
                     ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              final seconds = int.tryParse(_controller.text);
+                              if (seconds == null) {
+                                _logs.add(
+                                  'Incorrect input',
+                                  controller: _scrollController,
+                                );
+                                setState(() {});
+                                return;
+                              }
+                              _seconds = seconds;
+                              _shutdownDate = DateTime.now().add(
+                                Duration(seconds: seconds),
+                              );
+                              setState(() {});
+                              _timer();
+                              _shell.run('shutdown -s -t $seconds');
+                              _logs.add(
+                                'Shutdown scheduled - $_shutdownDate',
+                                controller: _scrollController,
+                              );
+                            },
+                            child: const Text('Start'),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _shell.run('shutdown -a');
+                              _logs.add(
+                                'Shutdown aborted - $_shutdownDate',
+                                controller: _scrollController,
+                              );
+                              _seconds = null;
+                              _shutdownDate = null;
+                              setState(() {});
+                            },
+                            child: const Text('Abort'),
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (_seconds != null) Text('Shutdown in: ${_seconds}s'),
+                    if (_shutdownDate != null)
+                      Text(
+                        'Shutdown at: ${_shutdownDate?.toLocal()}',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
                   ],
                 ),
               ),
@@ -128,5 +187,14 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  void _timer() async {
+    await Future.delayed(const Duration(seconds: 1));
+    final seconds = _seconds;
+    if (seconds == null || seconds <= 0) return;
+    _seconds = seconds - 1;
+    setState(() {});
+    _timer();
   }
 }
