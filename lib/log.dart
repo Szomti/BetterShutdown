@@ -8,7 +8,7 @@ class Log {
 }
 
 enum LogType {
-  user._('user', Colors.brown),
+  user._('user', Colors.black),
   info._('info', Colors.blue),
   error._('error', Colors.red);
 

@@ -17,10 +17,10 @@ class HomeLogs extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _HomeLogsState();
+  State<StatefulWidget> createState() => HomeLogsState();
 }
 
-class _HomeLogsState extends State<HomeLogs> {
+class HomeLogsState extends State<HomeLogs> {
   final _shellController = TextEditingController(text: '');
   final _shellFocus = FocusNode();
 
@@ -72,6 +72,12 @@ class _HomeLogsState extends State<HomeLogs> {
                   ProcessResult? result;
                   try {
                     result = await Process.run(command, args);
+                    if (result.stdout.toString().trim().isNotEmpty) {
+                      _logs.add(
+                        result.stdout.toString().trim(),
+                        controller: _scrollController,
+                      );
+                    }
                   } catch (error) {
                     if (result != null &&
                         result.stderr.toString().trim().isNotEmpty) {
@@ -80,12 +86,19 @@ class _HomeLogsState extends State<HomeLogs> {
                         type: LogType.error,
                         controller: _scrollController,
                       );
+                    } else {
+                      _logs.add(
+                        'Not a command',
+                        type: LogType.error,
+                        controller: _scrollController,
+                      );
                     }
                     debugPrint('$error');
+                  } finally {
+                    _shellController.text = '';
+                    setState(() {});
+                    _shellFocus.requestFocus();
                   }
-                  _shellController.text = '';
-                  setState(() {});
-                  _shellFocus.requestFocus();
                 },
                 controller: _shellController,
               ),

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:better_shutdown/custom_text_field.dart';
 import 'package:better_shutdown/log.dart';
+import 'package:better_shutdown/projected_date_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -17,12 +18,19 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   static const _padding = EdgeInsets.all(8.0);
-  final _controller = TextEditingController(text: '120');
+  static final _homeLogsKey = GlobalKey<HomeLogsState>();
+  final _textFieldController = TextEditingController(text: '120');
   final _scrollController = ScrollController();
   final _logs = Logs();
   int? _seconds;
   DateTime? _shutdownDate;
   bool processing = false;
+
+  @override
+  void initState() {
+    _check();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     HomeLogs(
                       scrollController: _scrollController,
                       logs: _logs,
-                      // shell: _shell,
+                      key: _homeLogsKey,
                     ),
                     const SizedBox(width: 8),
                     Expanded(
@@ -51,7 +59,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: SizedBox(
                                   height: 36,
                                   child: CustomTextField(
-                                    controller: _controller,
+                                    hintText: 'Seconds',
+                                    labelText: 'Seconds',
+                                    controller: _textFieldController,
                                     inputFormatters: [
                                       FilteringTextInputFormatter.digitsOnly
                                     ],
@@ -65,15 +75,39 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               Expanded(
                                 child: ElevatedButton(
-                                  onPressed: () {
-                                    showDatePicker(
+                                  onPressed: () async {
+                                    final now = DateTime.now();
+                                    final date = await showDatePicker(
                                       context: context,
-                                      firstDate: DateTime.now(),
-                                      lastDate: DateTime.now()
-                                          .add(const Duration(days: 3630)),
+                                      firstDate: now,
+                                      lastDate:
+                                          now.add(const Duration(days: 3630)),
                                     );
+                                    if (date == null) return;
+                                    if (!context.mounted) return;
+                                    final time = await showTimePicker(
+                                      context: context,
+                                      initialTime: TimeOfDay.now(),
+                                    );
+                                    if (time == null) return;
+                                    final scheduled = date.copyWith(
+                                      hour: time.hour,
+                                      minute: time.minute,
+                                    );
+                                    _textFieldController.text = scheduled
+                                        .difference(now)
+                                        .inSeconds
+                                        .toString();
+                                    _logs.add(
+                                      'Set time to: ${scheduled.toLocal()}',
+                                      controller: _scrollController,
+                                    );
+                                    setState(() {});
                                   },
-                                  child: const Text('Select Date'),
+                                  child: const FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text('Select Date'),
+                                  ),
                                 ),
                               ),
                             ],
@@ -84,26 +118,84 @@ class _HomeScreenState extends State<HomeScreen> {
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: _schedule,
-                                  child: const Text('Start'),
+                                  child: const FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text('Start'),
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: _abort,
-                                  child: const Text('Abort'),
+                                  child: const FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text('Abort'),
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                          if (_seconds != null)
-                            Text('Shutdown in: ${_seconds}s'),
-                          if (_shutdownDate != null)
-                            Text(
-                              'Shutdown at: ${_shutdownDate?.toLocal()}',
-                              textAlign: TextAlign.center,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.w600),
+                          const SizedBox(height: 8),
+                          Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: ThemeData.light()
+                                  .primaryColorLight
+                                  .withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: ProjectedDateText(
+                                      _textFieldController.text),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Spacer(),
+                          if (_seconds != null || _shutdownDate != null)
+                            Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Colors.red.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Column(
+                                children: [
+                                  if (_seconds != null)
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: FittedBox(
+                                            fit: BoxFit.scaleDown,
+                                            child: Text(
+                                              'Shutdown in: ${_seconds}s',
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  if (_shutdownDate != null)
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: FittedBox(
+                                            fit: BoxFit.scaleDown,
+                                            child: Text(
+                                              'Shutdown at: ${_shutdownDate?.toLocal()}',
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                              ),
                             ),
                         ],
                       ),
@@ -142,11 +234,72 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _timer() async {
     await Future.delayed(const Duration(seconds: 1));
+    if (!mounted) return;
     final seconds = _seconds;
     if (seconds == null || seconds <= 0) return;
     _seconds = seconds - 1;
     setState(() {});
     _timer();
+  }
+
+  Future<void> _check() async {
+    ProcessResult? result;
+    ProcessResult? abortResult;
+    try {
+      // TODO: Check if app scheduled one itself (to create timer)
+      processing = true;
+      _logs.add(
+        'Initializing',
+        controller: _scrollController,
+      );
+      _homeLogsKey.currentState?.setState(() {});
+      _logs.add(
+        'Testing if already scheduled',
+        controller: _scrollController,
+      );
+      _homeLogsKey.currentState?.setState(() {});
+      result = await Process.run(
+        'shutdown',
+        ['/s', '/t', '315000000'],
+      );
+
+      if (result.stderr.toString().trim().isEmpty &&
+          result.stdout.toString().trim().isEmpty) {
+        _logs.add(
+          'Shutdown not scheduled',
+          controller: _scrollController,
+        );
+        _homeLogsKey.currentState?.setState(() {});
+        abortResult = await Process.run(
+          'shutdown',
+          ['/a'],
+        );
+      }
+      _logs.add(
+        'Finished without problems',
+        controller: _scrollController,
+      );
+      _homeLogsKey.currentState?.setState(() {});
+    } catch (error) {
+      if (result != null && result.stderr.toString().trim().isNotEmpty) {
+        _logs.add(
+          'Shutdown already scheduled',
+          controller: _scrollController,
+        );
+      }
+      if (abortResult != null &&
+          abortResult.stderr.toString().trim().isNotEmpty) {
+        _logs.add(
+          abortResult.stderr.toString().trim(),
+          type: LogType.error,
+          controller: _scrollController,
+        );
+      }
+      debugPrint('$error');
+    } finally {
+      processing = false;
+      setState(() {});
+    }
   }
 
   Future<void> _abort() async {
@@ -175,7 +328,7 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       processing = true;
       setState(() {});
-      final seconds = int.tryParse(_controller.text);
+      final seconds = int.tryParse(_textFieldController.text);
       if (seconds == null) {
         _logs.add(
           'Incorrect input',

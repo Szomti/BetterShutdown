@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CustomTextField extends TextField {
-  const CustomTextField({
+  CustomTextField({
+    String? hintText,
+    String? labelText,
     super.controller,
     super.onSubmitted,
     super.focusNode,
@@ -10,12 +12,14 @@ class CustomTextField extends TextField {
   }) : super(
           cursorColor: Colors.black,
           style: const TextStyle(fontSize: 13.0),
-          decoration: const InputDecoration(
-            contentPadding: EdgeInsets.all(4),
-            border: OutlineInputBorder(
+          decoration: InputDecoration(
+            hintText: hintText,
+            labelText: labelText,
+            contentPadding: const EdgeInsets.all(4).copyWith(left: 8),
+            border: const OutlineInputBorder(
               borderSide: BorderSide(),
             ),
-            focusedBorder: OutlineInputBorder(
+            focusedBorder: const OutlineInputBorder(
               borderSide: BorderSide(),
             ),
           ),
