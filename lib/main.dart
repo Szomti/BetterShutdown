@@ -11,7 +11,7 @@ void main() async {
     size: Size(960, 540),
     center: true,
   );
-  windowManager.waitUntilReadyToShow(windowOptions, () async {
+  await windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
     await windowManager.focus();
   });

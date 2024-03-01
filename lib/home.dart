@@ -1,13 +1,14 @@
+import 'dart:async';
 import 'dart:io';
 
-import 'package:better_shutdown/custom_text_field.dart';
-import 'package:better_shutdown/log.dart';
-import 'package:better_shutdown/projected_date_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'custom_text_field.dart';
 import 'home_logs.dart';
+import 'log.dart';
 import 'logs.dart';
+import 'projected_date_text.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,7 +20,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   static const _padding = EdgeInsets.all(8.0);
   static final _homeLogsKey = GlobalKey<HomeLogsState>();
-  final _textFieldController = TextEditingController(text: '120');
+  final _textFieldController = TextEditingController(text: '300');
   final _scrollController = ScrollController();
   final _logs = Logs();
   int? _seconds;
@@ -59,11 +60,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: SizedBox(
                                   height: 36,
                                   child: CustomTextField(
-                                    hintText: 'Seconds',
                                     labelText: 'Seconds',
                                     controller: _textFieldController,
                                     inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly
+                                      FilteringTextInputFormatter.digitsOnly,
                                     ],
                                   ),
                                 ),
@@ -149,7 +149,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 Expanded(
                                   child: ProjectedDateText(
-                                      _textFieldController.text),
+                                    _textFieldController.text,
+                                  ),
                                 ),
                               ],
                             ),
@@ -188,7 +189,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                               'Shutdown at: ${_shutdownDate?.toLocal()}',
                                               textAlign: TextAlign.center,
                                               style: const TextStyle(
-                                                  fontWeight: FontWeight.w600),
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -232,14 +234,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _timer() async {
+  Future<void> _timer() async {
     await Future.delayed(const Duration(seconds: 1));
     if (!mounted) return;
     final seconds = _seconds;
     if (seconds == null || seconds <= 0) return;
     _seconds = seconds - 1;
     setState(() {});
-    _timer();
+    await _timer();
   }
 
   Future<void> _check() async {
@@ -361,7 +363,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Duration(seconds: seconds),
         );
         setState(() {});
-        _timer();
+        unawaited(_timer());
         _logs.add(
           'Shutdown scheduled - $_shutdownDate',
           controller: _scrollController,

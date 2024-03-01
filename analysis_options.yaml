@@ -23,6 +23,22 @@ linter:
   rules:
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+    - avoid_dynamic_calls
+    - prefer_relative_imports
+    - prefer_void_to_null
+    - unnecessary_statements
+    - always_declare_return_types
+    - avoid_void_async
+    - await_only_futures
+    - library_annotations
+    - lines_longer_than_80_chars
+    - matching_super_parameters
+    - prefer_single_quotes
+    - require_trailing_commas
+    - sized_box_shrink_expand
+    - unawaited_futures
+    - unnecessary_await_in_return
+    - use_enums
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

@@ -39,6 +39,6 @@ class _ProjectedDateTextState extends State<ProjectedDateText> {
     await Future.delayed(const Duration(seconds: 1));
     if (!mounted) return;
     setState(() {});
-    _refresh();
+    await _refresh();
   }
 }

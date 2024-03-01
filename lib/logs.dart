@@ -1,10 +1,16 @@
-import 'package:better_shutdown/log.dart';
 import 'package:flutter/material.dart';
+
+import 'log.dart';
 
 class Logs {
   final List<Log> entries;
+  final List<LogType> showTypes;
 
-  Logs({Iterable<Log>? entries}) : entries = entries?.toList() ?? [];
+  Logs({
+    Iterable<Log>? entries,
+    Iterable<LogType>? showTypes,
+  })  : entries = entries?.toList() ?? [],
+        showTypes = showTypes?.toList() ?? [...LogType.values];
 
   void add(
     String text, {
