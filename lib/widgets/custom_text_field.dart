@@ -12,7 +12,7 @@ class CustomTextField extends TextField {
           cursorColor: Colors.black,
           style: const TextStyle(fontSize: 13.0),
           decoration: InputDecoration(
-            labelText: labelText,
+            hintText: labelText,
             contentPadding: const EdgeInsets.all(4).copyWith(left: 8),
             border: const OutlineInputBorder(
               borderSide: BorderSide(),

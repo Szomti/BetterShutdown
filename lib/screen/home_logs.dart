@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'custom_text_field.dart';
-import 'log.dart';
-import 'logs.dart';
+import '../models/log.dart';
+import '../models/logs.dart';
+import '../widgets/custom_text_field.dart';
 
 class HomeLogs extends StatefulWidget {
   final ScrollController scrollController;
