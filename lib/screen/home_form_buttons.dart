@@ -141,6 +141,6 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
     if (seconds == null || seconds <= 0) return;
     _form.seconds = seconds - 1;
     _homeScreenKey.currentState?.setState(() {});
-    await _timer();
+    unawaited(_timer());
   }
 }

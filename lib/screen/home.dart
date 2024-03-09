@@ -8,6 +8,7 @@ import '../models/logs.dart';
 import '../models/main_form.dart';
 import '../models/schedule_type.dart';
 import 'home_form.dart';
+import 'home_info.dart';
 import 'home_logs.dart';
 import 'home_projected_date.dart';
 
@@ -22,8 +23,6 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   static const _padding = EdgeInsets.all(8.0);
-  int? _seconds;
-  DateTime? _shutdownDate;
 
   MainForm get _form => widget.form;
 
@@ -61,7 +60,17 @@ class HomeScreenState extends State<HomeScreen> {
                       key: _homeLogsKey,
                     ),
                     const SizedBox(width: 8),
-                    _createShutdownInfo(),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          HomeForm(_form),
+                          const SizedBox(height: 8),
+                          HomeProjectedDate(_currentField),
+                          const Spacer(),
+                          HomeInfo(_form),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -69,62 +78,6 @@ class HomeScreenState extends State<HomeScreen> {
             _createWindowCover(),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _createShutdownInfo() {
-    return Expanded(
-      child: Column(
-        children: [
-          HomeForm(_form),
-          const SizedBox(height: 8),
-          HomeProjectedDate(_currentField),
-          const Spacer(),
-          if (_seconds != null || _shutdownDate != null)
-            Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Column(
-                children: [
-                  if (_seconds != null)
-                    Row(
-                      children: [
-                        Expanded(
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              'Shutdown in: ${_seconds}s',
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  if (_shutdownDate != null)
-                    Row(
-                      children: [
-                        Expanded(
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              'Shutdown at: ${_shutdownDate?.toLocal()}',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                ],
-              ),
-            ),
-        ],
       ),
     );
   }
@@ -220,7 +173,7 @@ class HomeScreenState extends State<HomeScreen> {
     } finally {
       stopwatch.stop();
       _form.processing = false;
-      setState(() {});
+      if (mounted) setState(() {});
     }
   }
 }

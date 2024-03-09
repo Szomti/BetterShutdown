@@ -86,7 +86,7 @@ class HomeLogsState extends State<HomeLogs> {
                               } else {
                                 _logs.showTypes.add(LogType.user);
                               }
-                              setState(() {});
+                              if (mounted) setState(() {});
                             },
                             child: Container(
                               margin: const EdgeInsets.all(2),
@@ -110,7 +110,7 @@ class HomeLogsState extends State<HomeLogs> {
                               } else {
                                 _logs.showTypes.add(LogType.info);
                               }
-                              setState(() {});
+                              if (mounted) setState(() {});
                             },
                             child: Container(
                               margin: const EdgeInsets.all(2),
@@ -134,7 +134,7 @@ class HomeLogsState extends State<HomeLogs> {
                               } else {
                                 _logs.showTypes.add(LogType.error);
                               }
-                              setState(() {});
+                              if (mounted) setState(() {});
                             },
                             child: Container(
                               margin: const EdgeInsets.all(2),
@@ -163,7 +163,7 @@ class HomeLogsState extends State<HomeLogs> {
                 GestureDetector(
                   onTap: () {
                     _showFilters = !_showFilters;
-                    setState(() {});
+                    if (mounted) setState(() {});
                   },
                   child: Container(
                     padding: const EdgeInsets.all(5),
@@ -178,7 +178,7 @@ class HomeLogsState extends State<HomeLogs> {
                 GestureDetector(
                   onTap: () {
                     _logs.entries.clear();
-                    setState(() {});
+                    if (mounted) setState(() {});
                   },
                   child: Container(
                     padding: const EdgeInsets.all(5),
@@ -231,7 +231,7 @@ class HomeLogsState extends State<HomeLogs> {
                           debugPrint('$error');
                         } finally {
                           _shellController.text = '';
-                          setState(() {});
+                          if (mounted) setState(() {});
                           _shellFocus.requestFocus();
                         }
                       },
