@@ -11,6 +11,7 @@ Open Source Windows desktop app made for easier use of [shutdown command](https:
   - Hours
   - Days
   - Date
+- Abort existing scheduled shutdown
 - Projected date when would your PC shutdown with current given values
 - Information about already scheduled shutdown
   - Date when will PC shutdown
