@@ -23,6 +23,6 @@ Open Source Windows desktop app made for easier use of [shutdown command](https:
 
 ## Planned:
 - List of types of shutdown to choose from
-- Schedule shutdown but soft version (won't force every app to close)
+- Schedule shutdown but soft version (won't force every process to close)
 
 and more
