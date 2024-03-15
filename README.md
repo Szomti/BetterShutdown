@@ -23,7 +23,8 @@ Open Source Windows desktop app made for easier use of [shutdown command](https:
   - Input for basic commands (like in cmd)
 
 ## Planned:
-- List of types of shutdown to choose from
+- List of types of shutdown to choose from (restart, shutdown, hibernate, etc.)
 - Schedule shutdown but soft version (won't force every process to close)
+- Dark theme
 
 and more
