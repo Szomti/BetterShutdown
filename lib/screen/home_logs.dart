@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import '../app_colors.dart';
+import '../debug/debug.dart';
 import '../models/log.dart';
 import '../models/logs.dart';
 import '../widgets/custom_text_field.dart';
@@ -36,7 +38,7 @@ class HomeLogsState extends State<HomeLogs> {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
-            color: Colors.black45,
+            color: AppColors().border,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(4.0),
@@ -54,7 +56,9 @@ class HomeLogsState extends State<HomeLogs> {
                   controller: _scrollController,
                   children: [
                     ..._logs.entries.map((e) {
-                      if (_logs.showTypes.contains(e.type)) return e.widget;
+                      if (_logs.showTypes.contains(e.type)) {
+                        return e.createWidget();
+                      }
                       return const SizedBox.shrink();
                     }),
                     const SizedBox(height: 32),
@@ -68,7 +72,7 @@ class HomeLogsState extends State<HomeLogs> {
                   duration: const Duration(milliseconds: 75),
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
+                    border: Border.all(color: AppColors().border),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: ScrollConfiguration(
@@ -78,79 +82,13 @@ class HomeLogsState extends State<HomeLogs> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Show logs:'),
-                          GestureDetector(
-                            onTap: () {
-                              if (_logs.showTypes.contains(LogType.user)) {
-                                _logs.showTypes.remove(LogType.user);
-                              } else {
-                                _logs.showTypes.add(LogType.user);
-                              }
-                              if (mounted) setState(() {});
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.all(2),
-                              color: Colors.black.withOpacity(0.1),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    _logs.showTypes.contains(LogType.user)
-                                        ? Icons.check_box
-                                        : Icons.check_box_outline_blank,
-                                  ),
-                                  const Text('user'),
-                                ],
-                              ),
-                            ),
+                          Text(
+                            'Show logs:',
+                            style: TextStyle(color: AppColors().text),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              if (_logs.showTypes.contains(LogType.info)) {
-                                _logs.showTypes.remove(LogType.info);
-                              } else {
-                                _logs.showTypes.add(LogType.info);
-                              }
-                              if (mounted) setState(() {});
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.all(2),
-                              color: Colors.black.withOpacity(0.1),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    _logs.showTypes.contains(LogType.info)
-                                        ? Icons.check_box
-                                        : Icons.check_box_outline_blank,
-                                  ),
-                                  const Text('info'),
-                                ],
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              if (_logs.showTypes.contains(LogType.error)) {
-                                _logs.showTypes.remove(LogType.error);
-                              } else {
-                                _logs.showTypes.add(LogType.error);
-                              }
-                              if (mounted) setState(() {});
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.all(2),
-                              color: Colors.black.withOpacity(0.1),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    _logs.showTypes.contains(LogType.error)
-                                        ? Icons.check_box
-                                        : Icons.check_box_outline_blank,
-                                  ),
-                                  const Text('error'),
-                                ],
-                              ),
-                            ),
-                          ),
+                          _buildOption(LogType.user),
+                          _buildOption(LogType.info),
+                          _buildOption(LogType.error),
                         ],
                       ),
                     ),
@@ -168,10 +106,13 @@ class HomeLogsState extends State<HomeLogs> {
                   child: Container(
                     padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
+                      border: Border.all(color: AppColors().border),
                       borderRadius: BorderRadius.circular(4),
                     ),
-                    child: const Icon(Icons.filter_list_outlined),
+                    child: Icon(
+                      Icons.filter_list_outlined,
+                      color: AppColors().icon,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 4),
@@ -183,10 +124,13 @@ class HomeLogsState extends State<HomeLogs> {
                   child: Container(
                     padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
+                      border: Border.all(color: AppColors().border),
                       borderRadius: BorderRadius.circular(4),
                     ),
-                    child: const Icon(Icons.cleaning_services_outlined),
+                    child: Icon(
+                      Icons.cleaning_services_outlined,
+                      color: AppColors().icon,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 4),
@@ -197,6 +141,7 @@ class HomeLogsState extends State<HomeLogs> {
                       labelText: 'command prompt',
                       focusNode: _shellFocus,
                       onSubmitted: (text) async {
+                        text = text.trim();
                         _logs.add(
                           text,
                           type: LogType.user,
@@ -206,6 +151,12 @@ class HomeLogsState extends State<HomeLogs> {
                         final args = text.split(' ')..removeAt(0);
                         ProcessResult? result;
                         try {
+                          if (Debug().changeState(text)) return;
+                          if (await Debug().debugCommand(
+                            text,
+                            context,
+                            _shellController,
+                          )) return;
                           result = await Process.run(command, args);
                           if (result.stdout.toString().trim().isNotEmpty) {
                             _logs.add(
@@ -240,6 +191,37 @@ class HomeLogsState extends State<HomeLogs> {
                   ),
                 ),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOption(LogType logType) {
+    return GestureDetector(
+      onTap: () {
+        if (_logs.showTypes.contains(logType)) {
+          _logs.showTypes.remove(logType);
+        } else {
+          _logs.showTypes.add(logType);
+        }
+        if (mounted) setState(() {});
+      },
+      child: Container(
+        margin: const EdgeInsets.all(2),
+        color: AppColors().opposite.withOpacity(0.1),
+        child: Row(
+          children: [
+            Icon(
+              _logs.showTypes.contains(logType)
+                  ? Icons.check_box
+                  : Icons.check_box_outline_blank,
+              color: AppColors().icon,
+            ),
+            Text(
+              logType.name,
+              style: TextStyle(color: AppColors().text),
             ),
           ],
         ),

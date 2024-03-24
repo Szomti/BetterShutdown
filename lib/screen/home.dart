@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import '../app_colors.dart';
 import '../models/log.dart';
 import '../models/logs.dart';
 import '../models/main_form.dart';
@@ -46,6 +47,7 @@ class HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: AppColors().background,
         body: Stack(
           children: [
             AbsorbPointer(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../app_colors.dart';
 import '../models/schedule_type.dart';
 
 class HomeProjectedDate extends StatefulWidget {
@@ -42,6 +43,7 @@ class _HomeProjectedDateState extends State<HomeProjectedDate> {
               child: Text(
                 'Projected date:\n${_formatter.format(date.toLocal())}',
                 textAlign: TextAlign.center,
+                style: TextStyle(color: AppColors().text),
               ),
             ),
           ),

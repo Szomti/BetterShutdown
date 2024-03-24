@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import '../app_colors.dart';
 import '../models/log.dart';
 import '../models/logs.dart';
 import '../models/main_form.dart';
@@ -40,9 +41,12 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
         Expanded(
           child: ElevatedButton(
             onPressed: _schedule,
-            child: const FittedBox(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors().button,
+            ),
+            child: FittedBox(
               fit: BoxFit.scaleDown,
-              child: Text('Start'),
+              child: Text('Start', style: TextStyle(color: AppColors().text)),
             ),
           ),
         ),
@@ -50,9 +54,12 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
         Expanded(
           child: ElevatedButton(
             onPressed: _abort,
-            child: const FittedBox(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors().button,
+            ),
+            child: FittedBox(
               fit: BoxFit.scaleDown,
-              child: Text('Abort'),
+              child: Text('Abort', style: TextStyle(color: AppColors().text)),
             ),
           ),
         ),

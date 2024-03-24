@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../app_colors.dart';
+
 class CustomTextField extends TextField {
   CustomTextField({
     String? labelText,
@@ -9,16 +11,33 @@ class CustomTextField extends TextField {
     super.inputFormatters,
     super.key,
   }) : super(
-          cursorColor: Colors.black,
-          style: const TextStyle(fontSize: 13.0),
+          cursorColor: AppColors().opposite,
+          style: TextStyle(
+            fontSize: 13.0,
+            color: AppColors().text,
+            fontWeight: FontWeight.w400,
+          ),
           decoration: InputDecoration(
-            hintText: labelText,
-            contentPadding: const EdgeInsets.all(4).copyWith(left: 8),
-            border: const OutlineInputBorder(
-              borderSide: BorderSide(),
+            labelText: labelText,
+            labelStyle: TextStyle(
+              color: AppColors().text.withOpacity(0.5),
+              fontWeight: FontWeight.w400,
             ),
-            focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide(),
+            contentPadding: const EdgeInsets.all(4).copyWith(left: 8),
+            border: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: AppColors().border,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: AppColors().border,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: AppColors().border,
+              ),
             ),
           ),
         );

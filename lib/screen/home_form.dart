@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../app_colors.dart';
 import '../models/main_form.dart';
 import 'home_form_buttons.dart';
 import 'home_form_date.dart';
@@ -39,7 +40,7 @@ class _HomeFormState extends State<HomeForm> {
   Widget _createDropdownButton() {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.black54),
+        border: Border.all(color: AppColors().border),
         borderRadius: BorderRadius.circular(4.0),
       ),
       child: SizedBox(
@@ -55,15 +56,17 @@ class _HomeFormState extends State<HomeForm> {
                 padding: const EdgeInsets.only(left: 6.0),
                 underline: const SizedBox.shrink(),
                 alignment: Alignment.center,
+                dropdownColor: AppColors().background,
                 items: [
                   for (final field in FieldsType.values)
                     DropdownMenuItem(
                       value: field,
                       child: Text(
                         field.name,
-                        style: const TextStyle(
+                        style: TextStyle(
+                          color: AppColors().text,
                           fontSize: 14.0,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),

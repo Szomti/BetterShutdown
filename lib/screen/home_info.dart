@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../app_colors.dart';
 import '../models/main_form.dart';
 
 class HomeInfo extends StatefulWidget {
@@ -41,6 +42,7 @@ class HomeInfoState extends State<HomeInfo> {
                   child: Text(
                     'Shutdown in: ${diff}s',
                     textAlign: TextAlign.center,
+                    style: TextStyle(color: AppColors().text),
                   ),
                 ),
               ),
@@ -54,8 +56,9 @@ class HomeInfoState extends State<HomeInfo> {
                   child: Text(
                     'Shutdown at: ${_formatter.format(shutdownDate)}',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w600,
+                      color: AppColors().text,
                     ),
                   ),
                 ),
