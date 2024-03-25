@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../app_colors.dart';
-import '../../models/main_form.dart';
+import '../../../app_colors.dart';
+import '../../../models/main_form.dart';
 import 'home_form_buttons.dart';
 import 'home_form_date.dart';
 import 'home_form_field.dart';
@@ -17,6 +17,7 @@ class HomeForm extends StatefulWidget {
 
 class _HomeFormState extends State<HomeForm> {
   static const _verticalMargin = SizedBox(height: 8);
+  final AppColors _appColors = AppColors();
   final FocusNode _focus = FocusNode(canRequestFocus: false);
 
   MainForm get _form => widget.form;
@@ -40,7 +41,7 @@ class _HomeFormState extends State<HomeForm> {
   Widget _createDropdownButton() {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors().border),
+        border: Border.all(color: _appColors.border),
         borderRadius: BorderRadius.circular(4.0),
       ),
       child: SizedBox(
@@ -56,20 +57,10 @@ class _HomeFormState extends State<HomeForm> {
                 padding: const EdgeInsets.only(left: 6.0),
                 underline: const SizedBox.shrink(),
                 alignment: Alignment.center,
-                dropdownColor: AppColors().background,
+                dropdownColor: _appColors.background,
                 items: [
                   for (final field in FieldsType.values)
-                    DropdownMenuItem(
-                      value: field,
-                      child: Text(
-                        field.name,
-                        style: TextStyle(
-                          color: AppColors().text,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
+                    _createDropdownItem(field),
                 ],
                 onChanged: (value) {
                   _form.fieldValue = value ?? FieldsType.values.first;
@@ -79,6 +70,20 @@ class _HomeFormState extends State<HomeForm> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  DropdownMenuItem<FieldsType> _createDropdownItem(FieldsType field) {
+    return DropdownMenuItem(
+      value: field,
+      child: Text(
+        field.name,
+        style: TextStyle(
+          color: _appColors.text,
+          fontSize: 14.0,
+          fontWeight: FontWeight.w400,
         ),
       ),
     );

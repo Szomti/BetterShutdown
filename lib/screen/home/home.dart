@@ -9,10 +9,10 @@ import '../../models/logs.dart';
 import '../../models/main_form.dart';
 import '../../models/schedule_type.dart';
 import '../../widgets/window_cover.dart';
-import 'home_form.dart';
+import 'form/home_form.dart';
 import 'home_info.dart';
-import 'home_logs.dart';
 import 'home_projected_date.dart';
+import 'logs/home_logs.dart';
 
 class HomeScreen extends StatefulWidget {
   final MainForm form;
@@ -26,12 +26,9 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> {
   static const _padding = EdgeInsets.all(8.0);
   static bool initCheck = true;
+  final Logs _logs = Logs();
 
   MainForm get _form => widget.form;
-
-  Logs get _logs => _form.logs;
-
-  GlobalKey<HomeLogsState> get _homeLogsKey => _form.homeLogsKey;
 
   ScrollController get _scrollController => _form.scrollController;
 
@@ -58,11 +55,7 @@ class HomeScreenState extends State<HomeScreen> {
                 padding: _padding,
                 child: Row(
                   children: [
-                    HomeLogs(
-                      scrollController: _scrollController,
-                      logs: _logs,
-                      key: _homeLogsKey,
-                    ),
+                    HomeLogs(scrollController: _scrollController),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Column(
@@ -94,32 +87,28 @@ class HomeScreenState extends State<HomeScreen> {
     try {
       // TODO: Check if app scheduled one itself (to create timer)
       _form.processing = true;
-      _logs.add(
+      _logs.addLog(
         'Initializing',
         controller: _scrollController,
       );
-      _homeLogsKey.currentState?.setState(() {});
-      _logs.add(
+      _logs.addLog(
         'Scheduling shutdown - testing if any existing scheduled shutdown',
         controller: _scrollController,
       );
-      _homeLogsKey.currentState?.setState(() {});
       result = await Process.run(
         'shutdown',
         ['/s', '/t', '315000000'],
       );
       if (result.stderr.toString().trim().isEmpty &&
           result.stdout.toString().trim().isEmpty) {
-        _logs.add(
+        _logs.addLog(
           'Shutdown not scheduled',
           controller: _scrollController,
         );
-        _homeLogsKey.currentState?.setState(() {});
-        _logs.add(
+        _logs.addLog(
           'Canceling shutdown - aborting test scheduled shutdown',
           controller: _scrollController,
         );
-        _homeLogsKey.currentState?.setState(() {});
         abortResult = await Process.run(
           'shutdown',
           ['/a'],
@@ -128,14 +117,13 @@ class HomeScreenState extends State<HomeScreen> {
         throw result;
       }
       stopwatch.stop();
-      _logs.add(
+      _logs.addLog(
         'Finished without problems [${stopwatch.elapsedMilliseconds}ms]',
         controller: _scrollController,
       );
-      _homeLogsKey.currentState?.setState(() {});
     } catch (error) {
       if (result != null && result.stderr.toString().trim().isNotEmpty) {
-        _logs.add(
+        _logs.addLog(
           'Shutdown already scheduled!',
           type: LogType.error,
           controller: _scrollController,
@@ -143,7 +131,7 @@ class HomeScreenState extends State<HomeScreen> {
       }
       if (abortResult != null &&
           abortResult.stderr.toString().trim().isNotEmpty) {
-        _logs.add(
+        _logs.addLog(
           abortResult.stderr.toString().trim(),
           type: LogType.error,
           controller: _scrollController,

@@ -3,12 +3,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import '../../app_colors.dart';
-import '../../models/log.dart';
-import '../../models/logs.dart';
-import '../../models/main_form.dart';
-import '../../models/schedule_type.dart';
-import 'home.dart';
+import '../../../app_colors.dart';
+import '../../../models/log.dart';
+import '../../../models/logs.dart';
+import '../../../models/main_form.dart';
+import '../../../models/schedule_type.dart';
+import '../home.dart';
 
 class HomeFormButtons extends StatefulWidget {
   final MainForm form;
@@ -20,11 +20,12 @@ class HomeFormButtons extends StatefulWidget {
 }
 
 class _HomeFormButtonsState extends State<HomeFormButtons> {
+  final AppColors _appColors = AppColors();
+  final Logs _logs = Logs();
+
   MainForm get _form => widget.form;
 
   DateTime? get _shutdownDate => _form.shutdownDate;
-
-  Logs get _logs => _form.logs;
 
   ScrollController get _scrollController => _form.scrollController;
 
@@ -42,11 +43,11 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
           child: ElevatedButton(
             onPressed: _schedule,
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors().button,
+              backgroundColor: _appColors.button,
             ),
             child: FittedBox(
               fit: BoxFit.scaleDown,
-              child: Text('Start', style: TextStyle(color: AppColors().text)),
+              child: Text('Start', style: TextStyle(color: _appColors.text)),
             ),
           ),
         ),
@@ -55,11 +56,11 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
           child: ElevatedButton(
             onPressed: _abort,
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors().button,
+              backgroundColor: _appColors.button,
             ),
             child: FittedBox(
               fit: BoxFit.scaleDown,
-              child: Text('Abort', style: TextStyle(color: AppColors().text)),
+              child: Text('Abort', style: TextStyle(color: _appColors.text)),
             ),
           ),
         ),
@@ -73,13 +74,13 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
       ['/a'],
     );
     if (result.stderr.toString().trim().isNotEmpty) {
-      _logs.add(
+      _logs.addLog(
         result.stderr.toString().trim(),
         type: LogType.error,
         controller: _scrollController,
       );
     } else {
-      _logs.add(
+      _logs.addLog(
         'Shutdown aborted - ${_shutdownDate ?? 'unknown'}',
         controller: _scrollController,
       );
@@ -95,7 +96,7 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
       _homeScreenKey.currentState?.setState(() {});
       final seconds = _currentField.seconds;
       if (seconds == null) {
-        _logs.add(
+        _logs.addLog(
           'Incorrect input',
           controller: _scrollController,
         );
@@ -107,14 +108,14 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
         ['/s', '/t', '$seconds'],
       );
       if (result.stderr.toString().trim().isNotEmpty) {
-        _logs.add(
+        _logs.addLog(
           result.stderr.toString().trim(),
           type: LogType.error,
           controller: _scrollController,
         );
       }
       if (result.stdout.toString().trim().isNotEmpty) {
-        _logs.add(
+        _logs.addLog(
           result.stdout.toString().trim(),
           controller: _scrollController,
         );
@@ -127,7 +128,7 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
         );
         _homeScreenKey.currentState?.setState(() {});
         unawaited(_timer());
-        _logs.add(
+        _logs.addLog(
           'Shutdown scheduled - $_shutdownDate',
           controller: _scrollController,
         );

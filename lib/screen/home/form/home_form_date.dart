@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../models/logs.dart';
-import '../../models/main_form.dart';
-import 'home.dart';
+import '../../../models/logs.dart';
+import '../../../models/main_form.dart';
+import '../home.dart';
 
 class HomeFormDate extends StatefulWidget {
   final MainForm form;
@@ -14,9 +14,9 @@ class HomeFormDate extends StatefulWidget {
 }
 
 class _HomeFormDateState extends State<HomeFormDate> {
-  MainForm get _form => widget.form;
+  final Logs _logs = Logs();
 
-  Logs get _logs => _form.logs;
+  MainForm get _form => widget.form;
 
   ScrollController get _scrollController => _form.scrollController;
 
@@ -47,7 +47,7 @@ class _HomeFormDateState extends State<HomeFormDate> {
                 minute: time.minute,
               );
               _form.dateField.date = scheduled;
-              _logs.add(
+              _logs.addLog(
                 'Selected date: ${scheduled.toLocal()}',
                 controller: _scrollController,
               );

@@ -17,16 +17,16 @@ class Debug {
   bool changeState(String text) {
     if (text == 'debug on') {
       active = true;
-      Logs().add('$active', type: LogType.debug);
+      Logs().addLog('$active', type: LogType.debug);
       return true;
     }
     if (text == 'debug off') {
       active = false;
-      Logs().add('$active', type: LogType.debug);
+      Logs().addLog('$active', type: LogType.debug);
       return true;
     }
     if (text == 'debug status') {
-      Logs().add('$active', type: LogType.debug);
+      Logs().addLog('$active', type: LogType.debug);
       return true;
     }
     return false;

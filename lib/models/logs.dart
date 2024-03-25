@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'log.dart';
 
-class Logs {
+class Logs with ChangeNotifier {
   static final Logs _instance = Logs._();
   final List<Log> entries = [];
   final List<LogType> showTypes = [...LogType.values];
@@ -13,12 +13,13 @@ class Logs {
 
   void addCustom(Iterable<Log> customEntries) => entries.addAll(customEntries);
 
-  void add(
+  void addLog(
     String text, {
     LogType type = LogType.info,
     ScrollController? controller,
   }) {
     entries.add(TextLog(text, type));
+    notifyListeners();
     try {
       if (controller != null && controller.hasClients) {
         controller.animateTo(
@@ -30,5 +31,19 @@ class Logs {
     } catch (error) {
       debugPrint('$error');
     }
+  }
+
+  void clearLogs() {
+    entries.clear();
+    notifyListeners();
+  }
+
+  void handleGivenType(LogType type) {
+    if (showTypes.contains(type)) {
+      showTypes.remove(type);
+    } else {
+      showTypes.add(type);
+    }
+    notifyListeners();
   }
 }

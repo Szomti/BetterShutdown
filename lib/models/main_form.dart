@@ -2,12 +2,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import '../screen/home/home.dart';
-import '../screen/home/home_logs.dart';
-import 'logs.dart';
 import 'schedule_type.dart';
 
 class MainForm {
-  final homeLogsKey = GlobalKey<HomeLogsState>();
   final homeScreenKey = GlobalKey<HomeScreenState>();
   final secondsField = SecondsField();
   final minutesField = MinutesField();
@@ -15,7 +12,6 @@ class MainForm {
   final daysField = DaysField();
   final dateField = DateField();
   final scrollController = ScrollController();
-  final logs = Logs();
   FieldsType fieldValue = FieldsType.seconds;
   DateTime? shutdownDate;
   int? seconds;

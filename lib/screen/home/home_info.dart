@@ -15,6 +15,7 @@ class HomeInfo extends StatefulWidget {
 
 class HomeInfoState extends State<HomeInfo> {
   static final DateFormat _formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+  final AppColors _appColors = AppColors();
 
   MainForm get _form => widget.form;
 
@@ -42,7 +43,7 @@ class HomeInfoState extends State<HomeInfo> {
                   child: Text(
                     'Shutdown in: ${diff}s',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: AppColors().text),
+                    style: TextStyle(color: _appColors.text),
                   ),
                 ),
               ),
@@ -58,7 +59,7 @@ class HomeInfoState extends State<HomeInfo> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      color: AppColors().text,
+                      color: _appColors.text,
                     ),
                   ),
                 ),
