@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import '../app_colors.dart';
-import '../models/log.dart';
-import '../models/logs.dart';
-import '../models/main_form.dart';
-import '../models/schedule_type.dart';
+import '../../app_colors.dart';
+import '../../models/log.dart';
+import '../../models/logs.dart';
+import '../../models/main_form.dart';
+import '../../models/schedule_type.dart';
 import 'home.dart';
 
 class HomeFormButtons extends StatefulWidget {

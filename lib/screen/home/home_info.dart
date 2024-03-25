@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../app_colors.dart';
-import '../models/main_form.dart';
+import '../../app_colors.dart';
+import '../../models/main_form.dart';
 
 class HomeInfo extends StatefulWidget {
   final MainForm form;

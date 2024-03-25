@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'models/main_form.dart';
-import 'screen/home.dart';
+import 'screen/loading/loading.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,7 +37,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(MainForm()),
+      home: const LoadingScreen(),
     );
   }
 }

@@ -53,26 +53,21 @@ class Debug {
       case _DebugCommands.checkColors:
         Logs().addCustom(AppColors().checkValues());
       case _DebugCommands.light:
-        if (AppColors().appTheme == AppTheme.light) return true;
-        AppColors().changeTheme(AppTheme.light);
+        if (AppColors.appTheme == AppTheme.light) return true;
+        AppColors.changeTheme(AppTheme.light);
         shellController.text = '';
-        await Navigator.pushNamedAndRemoveUntil(
-          context,
-          '/',
-          (_) => false,
-        );
+        await restartApp(context);
       case _DebugCommands.dark:
-        if (AppColors().appTheme == AppTheme.dark) return true;
-        AppColors().changeTheme(AppTheme.dark);
+        if (AppColors.appTheme == AppTheme.dark) return true;
+        AppColors.changeTheme(AppTheme.dark);
         shellController.text = '';
-        await Navigator.pushNamedAndRemoveUntil(
-          context,
-          '/',
-          (_) => false,
-        );
+        await restartApp(context);
     }
     return true;
   }
+
+  static Future<void> restartApp(BuildContext context) =>
+      Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
 }
 
 enum _DebugCommands {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../app_colors.dart';
-import '../models/schedule_type.dart';
+import '../../app_colors.dart';
+import '../../models/schedule_type.dart';
 
 class HomeProjectedDate extends StatefulWidget {
   final ScheduleField field;

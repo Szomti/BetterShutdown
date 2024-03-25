@@ -7,7 +7,7 @@ enum AppTheme { dark, light }
 
 class AppColors {
   static final AppColors _instance = AppColors._();
-  AppTheme appTheme = AppTheme.dark;
+  static AppTheme appTheme = AppTheme.dark;
   AppTheme? _temp;
 
   AppColors._() {
@@ -77,8 +77,15 @@ class AppColors {
     return _instance;
   }
 
-  void changeTheme(AppTheme appTheme) {
-    this.appTheme = appTheme;
+  static void changeTheme(AppTheme appTheme) => AppColors.appTheme = appTheme;
+
+  static void switchTheme() {
+    switch (AppColors.appTheme) {
+      case AppTheme.dark:
+        AppColors.appTheme = AppTheme.light;
+      case AppTheme.light:
+        AppColors.appTheme = AppTheme.dark;
+    }
   }
 
   Color get main => _byTheme(

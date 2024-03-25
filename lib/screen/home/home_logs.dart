@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import '../app_colors.dart';
-import '../debug/debug.dart';
-import '../models/log.dart';
-import '../models/logs.dart';
-import '../widgets/custom_text_field.dart';
+import '../../app_colors.dart';
+import '../../debug/debug.dart';
+import '../../models/log.dart';
+import '../../models/logs.dart';
+import '../../widgets/custom_text_field.dart';
 
 class HomeLogs extends StatefulWidget {
   final ScrollController scrollController;
@@ -151,7 +151,6 @@ class HomeLogsState extends State<HomeLogs> {
                         final args = text.split(' ')..removeAt(0);
                         ProcessResult? result;
                         try {
-                          if (Debug().changeState(text)) return;
                           if (await Debug().debugCommand(
                             text,
                             context,
@@ -187,6 +186,26 @@ class HomeLogsState extends State<HomeLogs> {
                         }
                       },
                       controller: _shellController,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                GestureDetector(
+                  onTap: () {
+                    AppColors.switchTheme();
+                    Debug.restartApp(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors().border),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Icon(
+                      AppColors.appTheme == AppTheme.dark
+                          ? Icons.light_mode
+                          : Icons.dark_mode_outlined,
+                      color: AppColors().icon,
                     ),
                   ),
                 ),

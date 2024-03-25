@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import '../screen/home.dart';
-import '../screen/home_logs.dart';
+import '../screen/home/home.dart';
+import '../screen/home/home_logs.dart';
 import 'logs.dart';
 import 'schedule_type.dart';
 

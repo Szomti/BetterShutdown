@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../models/main_form.dart';
-import '../widgets/custom_text_field.dart';
+import '../../models/main_form.dart';
+import '../../widgets/custom_text_field.dart';
 
 class HomeFormField extends StatefulWidget {
   final MainForm form;

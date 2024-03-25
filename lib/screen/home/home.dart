@@ -3,11 +3,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import '../app_colors.dart';
-import '../models/log.dart';
-import '../models/logs.dart';
-import '../models/main_form.dart';
-import '../models/schedule_type.dart';
+import '../../app_colors.dart';
+import '../../models/log.dart';
+import '../../models/logs.dart';
+import '../../models/main_form.dart';
+import '../../models/schedule_type.dart';
+import '../../widgets/window_cover.dart';
 import 'home_form.dart';
 import 'home_info.dart';
 import 'home_logs.dart';
@@ -24,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   static const _padding = EdgeInsets.all(8.0);
+  static bool initCheck = true;
 
   MainForm get _form => widget.form;
 
@@ -77,39 +79,15 @@ class HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            _createWindowCover(),
+            if (_processing) const WindowCover(),
           ],
         ),
       ),
     );
   }
 
-  Widget _createWindowCover() {
-    if (!_processing) return const SizedBox.shrink();
-    return Column(
-      children: [
-        Expanded(
-          child: Row(
-            children: [
-              Expanded(
-                child: Container(
-                  color: Colors.black54,
-                  child: const Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
   Future<void> _check() async {
+    if (!initCheck) return;
     final stopwatch = Stopwatch()..start();
     ProcessResult? result;
     ProcessResult? abortResult;
@@ -174,6 +152,7 @@ class HomeScreenState extends State<HomeScreen> {
       debugPrint('$error');
     } finally {
       stopwatch.stop();
+      initCheck = false;
       _form.processing = false;
       if (mounted) setState(() {});
     }
