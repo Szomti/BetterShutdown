@@ -39,32 +39,31 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          child: ElevatedButton(
-            onPressed: _schedule,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _appColors.button,
-            ),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text('Start', style: TextStyle(color: _appColors.text)),
-            ),
-          ),
-        ),
+        _createButton(_schedule, 'Start'),
         const SizedBox(width: 8),
-        Expanded(
-          child: ElevatedButton(
-            onPressed: _abort,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _appColors.button,
-            ),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text('Abort', style: TextStyle(color: _appColors.text)),
+        _createButton(_abort, 'Abort'),
+      ],
+    );
+  }
+
+  Widget _createButton(void Function() onPressed, String text) {
+    return Expanded(
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: _appColors.button,
+        ),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            text,
+            style: TextStyle(
+              color: _appColors.text,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 

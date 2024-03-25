@@ -18,7 +18,7 @@ class HomeLogsCommandLine extends StatefulWidget {
 
 class _HomeLogsCommandLineState extends State<HomeLogsCommandLine> {
   final _shellController = TextEditingController(text: '');
-  final _shellFocus = FocusNode();
+  final _inputFocus = FocusNode();
   final Logs _logs = Logs();
 
   ScrollController get _scrollController => widget.scrollController;
@@ -29,8 +29,8 @@ class _HomeLogsCommandLineState extends State<HomeLogsCommandLine> {
       child: SizedBox(
         height: 36,
         child: CustomTextField(
-          labelText: 'command prompt',
-          focusNode: _shellFocus,
+          labelText: 'Command Line',
+          focusNode: _inputFocus,
           onSubmitted: (text) async {
             text = text.trim();
             _logs.addLog(
@@ -73,7 +73,7 @@ class _HomeLogsCommandLineState extends State<HomeLogsCommandLine> {
             } finally {
               _shellController.text = '';
               if (mounted) setState(() {});
-              _shellFocus.requestFocus();
+              _inputFocus.requestFocus();
             }
           },
           controller: _shellController,
