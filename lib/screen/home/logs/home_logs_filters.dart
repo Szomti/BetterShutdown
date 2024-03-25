@@ -30,30 +30,27 @@ class _HomeLogsFiltersState extends State<HomeLogsFilters> {
   Widget _buildMenu() {
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 200),
-      child: Expanded(
-        child: Container(
-          padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            color: _appColors.background,
-            border: Border.all(color: _appColors.border),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: ScrollConfiguration(
-            behavior:
-                ScrollConfiguration.of(context).copyWith(scrollbars: false),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Show logs:',
-                    style: TextStyle(color: _appColors.text),
-                  ),
-                  _buildOption(LogType.user),
-                  _buildOption(LogType.info),
-                  _buildOption(LogType.error),
-                ],
-              ),
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: _appColors.background,
+          border: Border.all(color: _appColors.border),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Show logs:',
+                  style: TextStyle(color: _appColors.text),
+                ),
+                _buildOption(LogType.user),
+                _buildOption(LogType.info),
+                _buildOption(LogType.error),
+              ],
             ),
           ),
         ),

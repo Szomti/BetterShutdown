@@ -103,28 +103,25 @@ class HomeLogsState extends State<HomeLogs> {
   }
 
   Widget _createLogs() {
-    return Expanded(
-      flex: 2,
-      child: ScrollConfiguration(
-        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-        child: ListenableBuilder(
-          listenable: _logs,
-          builder: (context, _) {
-            return ListView(
-              shrinkWrap: true,
-              controller: _scrollController,
-              children: [
-                ..._logs.entries.map((e) {
-                  if (_logs.showTypes.contains(e.type)) {
-                    return e.createWidget();
-                  }
-                  return const SizedBox.shrink();
-                }),
-                const SizedBox(height: 32),
-              ],
-            );
-          },
-        ),
+    return ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+      child: ListenableBuilder(
+        listenable: _logs,
+        builder: (context, _) {
+          return ListView(
+            shrinkWrap: true,
+            controller: _scrollController,
+            children: [
+              ..._logs.entries.map((e) {
+                if (_logs.showTypes.contains(e.type)) {
+                  return e.createWidget();
+                }
+                return const SizedBox.shrink();
+              }),
+              const SizedBox(height: 32),
+            ],
+          );
+        },
       ),
     );
   }
