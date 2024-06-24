@@ -2,16 +2,18 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import '../screen/home/home.dart';
+import '../shutdown/shutdown_options.dart';
 import 'schedule_type.dart';
 
 class MainForm {
   final homeScreenKey = GlobalKey<HomeScreenState>();
-  final secondsField = SecondsField();
-  final minutesField = MinutesField();
-  final hoursField = HoursField();
-  final daysField = DaysField();
-  final dateField = DateField();
-  final scrollController = ScrollController();
+  final SecondsField secondsField = SecondsField();
+  final MinutesField minutesField = MinutesField();
+  final HoursField hoursField = HoursField();
+  final DaysField daysField = DaysField();
+  final DateField dateField = DateField();
+  final ScrollController scrollController = ScrollController();
+  final ShutdownForm shutdownForm = ShutdownForm();
   FieldsType fieldValue = FieldsType.seconds;
   DateTime? shutdownDate;
   int? seconds;
