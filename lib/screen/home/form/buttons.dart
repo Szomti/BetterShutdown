@@ -25,6 +25,8 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
 
   int? get _seconds => _form.seconds;
 
+  bool get _shutdownActive => _form.shutdownActive;
+
   ShutdownForm get _shutdownForm => _form.shutdownForm;
 
   ShutdownPriority get _priority => _shutdownForm.priority;
@@ -35,14 +37,14 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        _createButton(_schedule, 'Start'),
+        _createButton(_shutdownActive ? null : _schedule, 'Start'),
         const SizedBox(width: 8),
         _createButton(_abort, 'Abort'),
       ],
     );
   }
 
-  Widget _createButton(void Function() onPressed, String text) {
+  Widget _createButton(void Function()? onPressed, String text) {
     return Expanded(
       child: ElevatedButton(
         onPressed: onPressed,
@@ -64,31 +66,104 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
   }
 
   Future<void> _abort() async {
-    final result = await Process.run(
-      'shutdown',
-      ['/a'],
-    );
-    if (result.stderr.toString().trim().isNotEmpty) {
-      _logs.addLog(
-        result.stderr.toString().trim(),
-        type: LogType.error,
-        controller: _scrollController,
+    _form.shutdownActive = false;
+    if (_priority.force) {
+      final result = await Process.run(
+        'shutdown',
+        ['/a'],
       );
-    } else {
-      _logs.addLog(
-        'Shutdown aborted - ${_shutdownDate ?? 'unknown'}',
-        controller: _scrollController,
-      );
+      if (result.stderr.toString().trim().isNotEmpty) {
+        _logs.addLog(
+          result.stderr.toString().trim(),
+          type: LogType.error,
+          controller: _scrollController,
+        );
+      } else {
+        _logs.addLog(
+          'Shutdown aborted - ${_shutdownDate ?? 'unknown'}',
+          controller: _scrollController,
+        );
+      }
     }
     _form.seconds = null;
     _form.shutdownDate = null;
+    _form.activeShutdownPriority = null;
     _homeScreenKey.currentState?.setState(() {});
+  }
+
+  Future<bool> _checkAndShowDialog() async {
+    if (_priority.force) {
+      if (_action == ShutdownHibernate() || _action == ShutdownLogout()) {
+        await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(16.0),
+                              decoration: BoxDecoration(
+                                color: AppColors().background,
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Option <${_action.text}> only works in <${ShutdownSoft().text}> mode',
+                                    style: TextStyle(
+                                      color: _appColors.text,
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0)
+                                        .copyWith(bottom: 0),
+                                    child: OutlinedButton(
+                                      onPressed: () {
+                                        if (context.mounted) {
+                                          Navigator.pop(context);
+                                        }
+                                      },
+                                      child: Text(
+                                        'Confirm'.toUpperCase(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: _appColors.text,
+                                          fontSize: 16.0,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+        return false;
+      }
+    }
+    return true;
   }
 
   Future<void> _schedule() async {
     try {
-      _form.processing = true;
-      _homeScreenKey.currentState?.setState(() {});
+      if (!(await _checkAndShowDialog())) return;
       final seconds = _currentField.seconds;
       if (seconds == null) {
         _logs.addLog(
@@ -104,11 +179,17 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
         _handleStart(seconds, result: null);
         await Future.delayed(Duration(seconds: seconds));
       }
-      final result = await Process.run(
-        'shutdown',
-        [_action.command, ...time],
-        runInShell: true,
-      );
+      _form.processing = true;
+      _homeScreenKey.currentState?.setState(() {});
+      ProcessResult? result;
+      if (!_form.shutdownActive) {
+        result = await Process.run(
+          'shutdown',
+          [_action.command, ...time],
+          runInShell: true,
+        );
+      }
+      if (result == null) return;
       if (result.stderr.toString().trim().isNotEmpty) {
         _logs.addLog(
           result.stderr.toString().trim(),
@@ -136,7 +217,9 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
     if (result == null ||
         result.stdout.toString().trim().isEmpty &&
             result.stderr.toString().trim().isEmpty) {
+      _form.shutdownActive = true;
       _form.seconds = seconds;
+      _form.activeShutdownPriority = _priority;
       _form.shutdownDate = DateTime.now().add(
         Duration(seconds: seconds),
       );
@@ -151,7 +234,7 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
 
   Future<void> _timer() async {
     await Future.delayed(const Duration(seconds: 1));
-    if (!mounted) return;
+    if (!mounted || !_form.shutdownActive) return;
     final seconds = _seconds;
     if (seconds == null || seconds <= 0) return;
     _form.seconds = seconds - 1;

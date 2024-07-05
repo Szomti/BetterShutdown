@@ -11,6 +11,7 @@ import '../../models/log.dart';
 import '../../models/logs.dart';
 import '../../models/main_form.dart';
 import '../../models/schedule_type.dart';
+import '../../shutdown/options.dart';
 import '../../widgets/window_cover.dart';
 import 'form/library.dart';
 import 'info.dart';
@@ -81,7 +82,6 @@ class HomeScreenState extends State<HomeScreen> {
                                   'Version ${Global.version}',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontWeight: FontWeight.w300,
                                     color: AppColors().text,
                                   ),
                                 ),
@@ -117,7 +117,6 @@ class HomeScreenState extends State<HomeScreen> {
     ProcessResult? result;
     ProcessResult? abortResult;
     try {
-      // TODO: Check if app scheduled one itself (to create timer)
       _form.processing = true;
       _logs.addLog(
         'Initializing',
@@ -129,7 +128,7 @@ class HomeScreenState extends State<HomeScreen> {
       );
       result = await Process.run(
         'shutdown',
-        ['/s', '/t', '315000000'],
+        [ShutdownRestart().command, '/t', '315000000'],
       );
       if (result.stderr.toString().trim().isEmpty &&
           result.stdout.toString().trim().isEmpty) {
@@ -155,6 +154,7 @@ class HomeScreenState extends State<HomeScreen> {
       );
     } catch (error) {
       if (result != null && result.stderr.toString().trim().isNotEmpty) {
+        _form.shutdownActive = true;
         _logs.addLog(
           'Shutdown already scheduled!',
           type: LogType.error,

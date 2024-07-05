@@ -16,7 +16,9 @@ class MainForm {
   final ShutdownForm shutdownForm = ShutdownForm();
   FieldsType fieldValue = FieldsType.seconds;
   DateTime? shutdownDate;
+  ShutdownPriority? activeShutdownPriority;
   int? seconds;
+  bool shutdownActive = false;
   bool processing = false;
 
   ScheduleField get currentField {

@@ -62,12 +62,13 @@ class HomeLogsState extends State<HomeLogs> {
                     _showFilters = !_showFilters;
                     if (mounted) setState(() {});
                   },
-                  Icons.filter_list_outlined,
+                  Symbols.filter_list,
                 ),
                 _horizontalMargin,
                 _createBtn(
                   () => _logs.clearLogs(),
                   Symbols.cleaning_services,
+                  weight: 250,
                 ),
                 _horizontalMargin,
                 HomeLogsCommandLine(_scrollController),
@@ -78,8 +79,8 @@ class HomeLogsState extends State<HomeLogs> {
                     Global.restartApp(context);
                   },
                   AppColors.appTheme == AppTheme.dark
-                      ? Icons.light_mode
-                      : Icons.dark_mode_outlined,
+                      ? Symbols.light_mode
+                      : Symbols.dark_mode,
                 ),
               ],
             ),
@@ -89,7 +90,7 @@ class HomeLogsState extends State<HomeLogs> {
     );
   }
 
-  Widget _createBtn(void Function() onTap, IconData icon) {
+  Widget _createBtn(void Function() onTap, IconData icon, {double? weight}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -98,7 +99,7 @@ class HomeLogsState extends State<HomeLogs> {
           border: Border.all(color: _appColors.border),
           borderRadius: BorderRadius.circular(4),
         ),
-        child: Icon(icon, color: _appColors.icon),
+        child: Icon(icon, color: _appColors.icon, weight: weight),
       ),
     );
   }
