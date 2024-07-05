@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../app_colors.dart';
-import '../../../debug/debug.dart';
+import '../../../global.dart';
 import '../../../models/logs.dart';
 import 'command_line.dart';
 import 'filters.dart';
@@ -75,7 +75,7 @@ class HomeLogsState extends State<HomeLogs> {
                 _createBtn(
                   () {
                     AppColors.switchTheme();
-                    Debug.restartApp(context);
+                    Global.restartApp(context);
                   },
                   AppColors.appTheme == AppTheme.dark
                       ? Icons.light_mode

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../app_colors.dart';
@@ -5,6 +7,7 @@ import '../../models/main_form.dart';
 import '../../models/no_animation_route.dart';
 import '../../widgets/window_cover.dart';
 import '../home/home.dart';
+import '../other_system/screen.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
@@ -20,7 +23,15 @@ class _LoadingScreenState extends State<LoadingScreen> {
       (_) => Future.delayed(
         const Duration(milliseconds: 400),
         () {
-          Navigator.push(
+          if (!Platform.isWindows) {
+            return Navigator.push(
+              context,
+              NoAnimationRoute(
+                builder: (BuildContext context) => const OtherSystemScreen(),
+              ),
+            );
+          }
+          return Navigator.push(
             context,
             NoAnimationRoute(
               builder: (BuildContext context) => HomeScreen(MainForm()),

@@ -3,6 +3,30 @@ import 'package:flutter/scheduler.dart';
 
 import 'models/log.dart';
 
+class _DarkColors {
+  static const main = Colors.black;
+  static const warning = Color(0xFFEAB63F);
+  static const opposite = Colors.white;
+  static const button = Color(0xFF525252);
+  static const icon = Color(0xFFCECECE);
+  static const background = Color(0xFF343434);
+  static const tile = Color(0xFF4B4B4B);
+  static const border = Colors.white38;
+  static const text = Color(0xFFCFCFCF);
+}
+
+class _LightColors {
+  static const main = Colors.white;
+  static const warning = Color(0xFFEAB63F);
+  static const opposite = Colors.black;
+  static const button = Color(0xFFF6F6F6);
+  static const icon = Colors.black;
+  static const background = Colors.white;
+  static const tile = Color(0xFFEAEAEA);
+  static const border = Colors.black54;
+  static const text = Colors.black;
+}
+
 enum AppTheme { dark, light }
 
 class AppColors {
@@ -93,6 +117,11 @@ class AppColors {
         light: _LightColors.main,
       );
 
+  Color get warning => _byTheme(
+        dark: _DarkColors.warning,
+        light: _LightColors.warning,
+      );
+
   Color get opposite => _byTheme(
         dark: _DarkColors.opposite,
         light: _LightColors.opposite,
@@ -146,26 +175,4 @@ class AppColors {
       }
     }
   }
-}
-
-class _DarkColors {
-  static const main = Colors.black;
-  static const opposite = Colors.white;
-  static const button = Color(0xFF525252);
-  static const icon = Color(0xFFCECECE);
-  static const background = Color(0xFF343434);
-  static const tile = Color(0xFF4B4B4B);
-  static const border = Colors.white38;
-  static const text = Color(0xFFCFCFCF);
-}
-
-class _LightColors {
-  static const main = Colors.white;
-  static const opposite = Colors.black;
-  static const button = Color(0xFFF6F6F6);
-  static const icon = Colors.black;
-  static const background = Colors.white;
-  static const tile = Color(0xFFEAEAEA);
-  static const border = Colors.black54;
-  static const text = Colors.black;
 }

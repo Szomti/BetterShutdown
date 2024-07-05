@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../app_colors.dart';
+import '../global.dart';
 import '../models/log.dart';
 import '../models/logs.dart';
 
@@ -56,18 +57,15 @@ class Debug {
         if (AppColors.appTheme == AppTheme.light) return true;
         AppColors.changeTheme(AppTheme.light);
         shellController.text = '';
-        await restartApp(context);
+        await Global.restartApp(context);
       case _DebugCommands.dark:
         if (AppColors.appTheme == AppTheme.dark) return true;
         AppColors.changeTheme(AppTheme.dark);
         shellController.text = '';
-        await restartApp(context);
+        await Global.restartApp(context);
     }
     return true;
   }
-
-  static Future<void> restartApp(BuildContext context) =>
-      Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
 }
 
 enum _DebugCommands {
