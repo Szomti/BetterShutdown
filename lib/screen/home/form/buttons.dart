@@ -99,12 +99,12 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
         );
         return false;
       }
-      if (_priority == ShutdownSoft()) {
-        await _showDialog(
-          'Option <${_action.text}> requires app to be constantly running.',
-        );
-        return true;
-      }
+    }
+    if (!_priority.force) {
+      await _showDialog(
+        'Option <${_priority.text}> requires app to be constantly running.',
+      );
+      return true;
     }
     return true;
   }
