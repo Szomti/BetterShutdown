@@ -1,14 +1,4 @@
-import 'dart:async';
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-
-import '../../../app_colors.dart';
-import '../../../models/log.dart';
-import '../../../models/logs.dart';
-import '../../../models/main_form.dart';
-import '../../../models/schedule_type.dart';
-import '../home.dart';
+part of './library.dart';
 
 class HomeFormButtons extends StatefulWidget {
   final MainForm form;
@@ -34,6 +24,12 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
   GlobalKey<HomeScreenState> get _homeScreenKey => _form.homeScreenKey;
 
   int? get _seconds => _form.seconds;
+
+  ShutdownForm get _shutdownForm => _form.shutdownForm;
+
+  ShutdownPriority get _priority => _shutdownForm.priority;
+
+  ShutdownAction get _action => _shutdownForm.action;
 
   @override
   Widget build(BuildContext context) {
@@ -102,9 +98,16 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
         _homeScreenKey.currentState?.setState(() {});
         return;
       }
+      List<String> time = ['/t', '$seconds'];
+      if (!_priority.force) {
+        time = [];
+        _handleStart(seconds, result: null);
+        await Future.delayed(Duration(seconds: seconds));
+      }
       final result = await Process.run(
         'shutdown',
-        ['/s', '/t', '$seconds'],
+        [_action.command, ...time],
+        runInShell: true,
       );
       if (result.stderr.toString().trim().isNotEmpty) {
         _logs.addLog(
@@ -119,25 +122,30 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
           controller: _scrollController,
         );
       }
-      if (result.stdout.toString().trim().isEmpty &&
-          result.stderr.toString().trim().isEmpty) {
-        _form.seconds = seconds;
-        _form.shutdownDate = DateTime.now().add(
-          Duration(seconds: seconds),
-        );
-        _homeScreenKey.currentState?.setState(() {});
-        unawaited(_timer());
-        _logs.addLog(
-          'Shutdown scheduled - $_shutdownDate',
-          controller: _scrollController,
-        );
-      }
+      if (_priority.force) _handleStart(seconds, result: result);
     } catch (error) {
       debugPrint('$error');
     } finally {
-      await Future.delayed(const Duration(milliseconds: 50));
+      await Future.delayed(const Duration(milliseconds: 250));
       _form.processing = false;
       _homeScreenKey.currentState?.setState(() {});
+    }
+  }
+
+  void _handleStart(int seconds, {required ProcessResult? result}) {
+    if (result == null ||
+        result.stdout.toString().trim().isEmpty &&
+            result.stderr.toString().trim().isEmpty) {
+      _form.seconds = seconds;
+      _form.shutdownDate = DateTime.now().add(
+        Duration(seconds: seconds),
+      );
+      _homeScreenKey.currentState?.setState(() {});
+      unawaited(_timer());
+      _logs.addLog(
+        'Shutdown scheduled - $_shutdownDate',
+        controller: _scrollController,
+      );
     }
   }
 

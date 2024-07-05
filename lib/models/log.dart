@@ -18,7 +18,7 @@ class TextLog extends Log {
 
   @override
   Widget createWidget() {
-    TextSpan name = coloredText(type.name, type.color);
+    TextSpan name = _coloredText(type.name, type.color);
     return Container(
       margin: const EdgeInsets.only(bottom: 3.0),
       padding: const EdgeInsets.all(2.0),
@@ -26,16 +26,16 @@ class TextLog extends Log {
         color: type.color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(4.0),
       ),
-      child: RichText(
-        text: TextSpan(
+      child: Text.rich(
+        TextSpan(
           style: const TextStyle(fontSize: 12),
           children: [
-            coloredText(
+            _coloredText(
               '[${_logTime()}] ',
               AppColors().text.withOpacity(0.8),
             ),
             name,
-            coloredText(': $text'),
+            _coloredText(': $text'),
           ],
         ),
       ),
@@ -50,7 +50,7 @@ class TextLog extends Log {
     return '$hour:$minute:$second.$millisecond';
   }
 
-  TextSpan coloredText(String text, [Color? color]) => TextSpan(
+  TextSpan _coloredText(String text, [Color? color]) => TextSpan(
         text: text,
         style: TextStyle(color: color ?? AppColors().text),
       );

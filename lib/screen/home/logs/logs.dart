@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../app_colors.dart';
 import '../../../debug/debug.dart';
 import '../../../models/logs.dart';
-import 'home_logs_command_line.dart';
-import 'home_logs_filters.dart';
+import 'command_line.dart';
+import 'filters.dart';
 
 class HomeLogs extends StatefulWidget {
   final ScrollController scrollController;
@@ -66,7 +67,7 @@ class HomeLogsState extends State<HomeLogs> {
                 _horizontalMargin,
                 _createBtn(
                   () => _logs.clearLogs(),
-                  Icons.cleaning_services_outlined,
+                  Symbols.cleaning_services,
                 ),
                 _horizontalMargin,
                 HomeLogsCommandLine(_scrollController),
@@ -108,18 +109,20 @@ class HomeLogsState extends State<HomeLogs> {
       child: ListenableBuilder(
         listenable: _logs,
         builder: (context, _) {
-          return ListView(
-            shrinkWrap: true,
-            controller: _scrollController,
-            children: [
-              ..._logs.entries.map((e) {
-                if (_logs.showTypes.contains(e.type)) {
-                  return e.createWidget();
-                }
-                return const SizedBox.shrink();
-              }),
-              const SizedBox(height: 32),
-            ],
+          return SelectionArea(
+            child: ListView(
+              shrinkWrap: true,
+              controller: _scrollController,
+              children: [
+                ..._logs.entries.map((e) {
+                  if (_logs.showTypes.contains(e.type)) {
+                    return e.createWidget();
+                  }
+                  return const SizedBox.shrink();
+                }),
+                const SizedBox(height: 32),
+              ],
+            ),
           );
         },
       ),

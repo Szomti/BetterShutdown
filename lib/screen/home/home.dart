@@ -2,17 +2,20 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../app_colors.dart';
+import '../../global.dart';
 import '../../models/log.dart';
 import '../../models/logs.dart';
 import '../../models/main_form.dart';
 import '../../models/schedule_type.dart';
 import '../../widgets/window_cover.dart';
-import 'form/home_form.dart';
-import 'home_info.dart';
-import 'home_projected_date.dart';
-import 'logs/home_logs.dart';
+import 'form/library.dart';
+import 'info.dart';
+import 'logs/logs.dart';
+import 'projected_date.dart';
 
 class HomeScreen extends StatefulWidget {
   final MainForm form;
@@ -25,7 +28,8 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   static const _padding = EdgeInsets.all(8.0);
-  static bool initCheck = true;
+  static final _url = Uri.parse('https://github.com/Szomti/better_shutdown');
+  static bool _initCheck = true;
   final Logs _logs = Logs();
 
   MainForm get _form => widget.form;
@@ -63,8 +67,36 @@ class HomeScreenState extends State<HomeScreen> {
                           HomeForm(_form),
                           const SizedBox(height: 8),
                           HomeProjectedDate(_currentField),
-                          const Spacer(),
                           HomeInfo(_form),
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                              color: AppColors().tile,
+                              borderRadius: BorderRadius.circular(4.0),
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  'Version ${Global.version}',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                    color: AppColors().text,
+                                  ),
+                                ),
+                                const Spacer(),
+                                GestureDetector(
+                                  onTap: () => launchUrl(_url),
+                                  child: Icon(
+                                    Symbols.language,
+                                    color: AppColors().opposite,
+                                    weight: 300,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -80,7 +112,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _check() async {
-    if (!initCheck) return;
+    if (!_initCheck) return;
     final stopwatch = Stopwatch()..start();
     ProcessResult? result;
     ProcessResult? abortResult;
@@ -140,7 +172,7 @@ class HomeScreenState extends State<HomeScreen> {
       debugPrint('$error');
     } finally {
       stopwatch.stop();
-      initCheck = false;
+      _initCheck = false;
       _form.processing = false;
       if (mounted) setState(() {});
     }

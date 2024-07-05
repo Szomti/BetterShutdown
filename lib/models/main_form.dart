@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import '../screen/home/home.dart';
-import '../shutdown/shutdown_options.dart';
+import '../shutdown/options.dart';
 import 'schedule_type.dart';
 
 class MainForm {

@@ -1,11 +1,4 @@
-import 'package:flutter/material.dart';
-
-import '../../../app_colors.dart';
-import '../../../models/main_form.dart';
-import '../../../shutdown/shutdown_options.dart';
-import 'home_form_buttons.dart';
-import 'home_form_date.dart';
-import 'home_form_field.dart';
+part of './library.dart';
 
 class HomeForm extends StatefulWidget {
   final MainForm form;
@@ -62,7 +55,7 @@ class _HomeFormState extends State<HomeForm> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-              child: DropdownButton<ShutdownOption>(
+              child: DropdownButton<ShutdownPriority>(
                 value: _shutdownForm.priority,
                 focusNode: _focus,
                 isExpanded: true,
@@ -75,7 +68,7 @@ class _HomeFormState extends State<HomeForm> {
                     DropdownMenuItem(
                       value: option,
                       child: Text(
-                        option.runtimeType.toString(),
+                        option.text.toString(),
                         style: TextStyle(
                           color: _appColors.text,
                           fontSize: 14.0,
@@ -110,7 +103,7 @@ class _HomeFormState extends State<HomeForm> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-              child: DropdownButton<ShutdownOption>(
+              child: DropdownButton<ShutdownAction>(
                 value: _shutdownForm.action,
                 focusNode: _focus,
                 isExpanded: true,
@@ -123,7 +116,7 @@ class _HomeFormState extends State<HomeForm> {
                     DropdownMenuItem(
                       value: option,
                       child: Text(
-                        option.runtimeType.toString(),
+                        option.text.toString(),
                         style: TextStyle(
                           color: _appColors.text,
                           fontSize: 14.0,

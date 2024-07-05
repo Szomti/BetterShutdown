@@ -27,6 +27,7 @@ class HomeInfoState extends State<HomeInfo> {
     if (shutdownDate == null) return const SizedBox.shrink();
     final diff = shutdownDate.difference(DateTime.now()).inSeconds;
     return Container(
+      margin: const EdgeInsets.only(bottom: 8.0),
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: Colors.red.withOpacity(0.2),

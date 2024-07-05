@@ -30,6 +30,7 @@ class _HomeProjectedDateState extends State<HomeProjectedDate> {
     if (seconds == null) return const SizedBox.shrink();
     final date = DateTime.now().add(Duration(seconds: seconds));
     return Container(
+      margin: const EdgeInsets.only(bottom: 8.0),
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: ThemeData.light().primaryColorLight.withOpacity(0.3),
