@@ -94,68 +94,16 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
   Future<bool> _checkAndShowDialog() async {
     if (_priority.force) {
       if (_action == ShutdownHibernate() || _action == ShutdownLogout()) {
-        await showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(16.0),
-                              decoration: BoxDecoration(
-                                color: AppColors().background,
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Option <${_action.text}> only works in <${ShutdownSoft().text}> mode',
-                                    style: TextStyle(
-                                      color: _appColors.text,
-                                      fontSize: 16.0,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0)
-                                        .copyWith(bottom: 0),
-                                    child: OutlinedButton(
-                                      onPressed: () {
-                                        if (context.mounted) {
-                                          Navigator.pop(context);
-                                        }
-                                      },
-                                      child: Text(
-                                        'Confirm'.toUpperCase(),
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: _appColors.text,
-                                          fontSize: 16.0,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            );
-          },
+        await _showDialog(
+          'Option <${_action.text}> only works in <${ShutdownSoft().text}> mode.',
         );
         return false;
+      }
+      if (_priority == ShutdownSoft()) {
+        await _showDialog(
+          'Option <${_action.text}> requires app to be constantly running.',
+        );
+        return true;
       }
     }
     return true;
@@ -240,5 +188,69 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
     _form.seconds = seconds - 1;
     _homeScreenKey.currentState?.setState(() {});
     unawaited(_timer());
+  }
+
+  Future<void> _showDialog(String text) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Row(
+          children: [
+            Expanded(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(16.0),
+                          decoration: BoxDecoration(
+                            color: AppColors().background,
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                text,
+                                style: TextStyle(
+                                  color: _appColors.text,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0)
+                                    .copyWith(bottom: 0),
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    if (context.mounted) {
+                                      Navigator.pop(context);
+                                    }
+                                  },
+                                  child: Text(
+                                    'Confirm'.toUpperCase(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: _appColors.text,
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
