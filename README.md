@@ -5,6 +5,14 @@ Open Source Windows desktop app made for easier use of [shutdown command](https:
 *Currently contains very basic actions*
 
 ## Features:
+- Schedule:
+  - Shutdown
+  - Restart
+  - Hibernate
+  - Logout
+- Schedule modes:
+  - Force (default by system)
+  - Soft (requires app to constantly run)
 - Schedule shutdown with:
   - Seconds
   - Minutes
@@ -24,7 +32,8 @@ Open Source Windows desktop app made for easier use of [shutdown command](https:
 - Dark/Light Theme
 
 ## Planned:
-- List of types of shutdown to choose from (restart, shutdown, hibernate, etc.)
-- Schedule shutdown but soft version (won't force every process to close)
+- Minimize (hide) app 
+- Huge code clean-up
+- Optimization
 
 and more
