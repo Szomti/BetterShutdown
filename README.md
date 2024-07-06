@@ -30,6 +30,7 @@ Open Source Windows desktop app made for easier use of [shutdown command](https:
 - Dark/Light Theme
 
 ## Planned:
+- Better time format than only seconds (information about how long till shutdown)
 - Minimize (hide) app 
 - Huge code clean-up
 - Optimization
