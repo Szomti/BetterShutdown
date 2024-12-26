@@ -130,7 +130,7 @@ class _HomeFormButtonsState extends State<HomeFormButtons> {
       _form.processing = true;
       _homeScreenKey.currentState?.setState(() {});
       ProcessResult? result;
-      if (!_form.shutdownActive) {
+      if (!_form.shutdownActive || !_priority.force) {
         result = await Process.run(
           'shutdown',
           [_action.command, ...time],
