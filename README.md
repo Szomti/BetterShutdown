@@ -29,6 +29,10 @@ Open Source Windows desktop app made for easier use of [shutdown command](https:
   - Input for basic commands (like in cmd)
 - Dark/Light Theme
 
+## Known issues:
+- Can't cancel soft shutdown using abort btn or in the confirmation dialog (you can stop it by closing the app though)
+- Soft shutdown might still have some issues as I just made a quick fix
+
 ## Planned:
 - Better time format than only seconds (information about how long till shutdown)
 - Minimize (hide) app 
